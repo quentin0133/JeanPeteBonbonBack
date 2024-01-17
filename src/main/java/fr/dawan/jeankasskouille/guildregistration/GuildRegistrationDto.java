@@ -1,17 +1,14 @@
-package fr.dawan.jeankasskouille.schedule;
+package fr.dawan.jeankasskouille.guildregistration;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScheduleDto {
+public class GuildRegistrationDto {
     private long id;
     private int version;
-    private String message;
-    private LocalDateTime dateTime;
+    private long idTextChannel;
 }

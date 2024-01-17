@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public abstract class GenericServiceImpl<
-        E extends BaseEntity,
+        E,
         R extends JpaRepository<E, Long>,
         D,
         M extends GenericMapper<E,D>

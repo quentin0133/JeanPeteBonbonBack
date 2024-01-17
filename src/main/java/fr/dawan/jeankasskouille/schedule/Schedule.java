@@ -15,5 +15,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Schedule extends BaseEntity {
+    private String message;
     private LocalDateTime dateTime;
 }
