@@ -20,7 +20,8 @@ public enum BotCommand {
         new OptionData(OptionType.STRING, "message","Message émit lorsqu'il atteindra la date de son évènement", true),
         new OptionData(OptionType.STRING, "date","date au format dd-MM-yyyy", true),
         new OptionData(OptionType.STRING, "time","temps au format HH:mm:ss", true)
-    ));
+    )),
+    SET_TROLL("Assigne le trolling du bot", List.of(new OptionData(OptionType.BOOLEAN, "is_trolling", "Active ou désactive le trolling du bot")));
 
     private final String description;
     private final List<OptionData> optionsData;

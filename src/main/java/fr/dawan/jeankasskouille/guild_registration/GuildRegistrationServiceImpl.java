@@ -1,4 +1,4 @@
-package fr.dawan.jeankasskouille.guildregistration;
+package fr.dawan.jeankasskouille.guild_registration;
 
 import fr.dawan.jeankasskouille.generic.GenericServiceImpl;
 import lombok.extern.slf4j.Slf4j;
