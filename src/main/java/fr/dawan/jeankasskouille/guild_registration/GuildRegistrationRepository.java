@@ -1,4 +1,4 @@
-package fr.dawan.jeankasskouille.guildregistration;
+package fr.dawan.jeankasskouille.guild_registration;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

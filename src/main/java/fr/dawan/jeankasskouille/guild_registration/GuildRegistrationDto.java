@@ -1,4 +1,4 @@
-package fr.dawan.jeankasskouille.guildregistration;
+package fr.dawan.jeankasskouille.guild_registration;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

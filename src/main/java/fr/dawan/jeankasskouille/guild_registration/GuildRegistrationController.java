@@ -1,4 +1,4 @@
-package fr.dawan.jeankasskouille.guildregistration;
+package fr.dawan.jeankasskouille.guild_registration;
 
 import fr.dawan.jeankasskouille.generic.GenericController;
 import org.springframework.web.bind.annotation.RequestMapping;
