@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 public class MessageReactionTroll extends BaseEntity {
     private final String unicodeEmoji;
-    private String description;
+    private String messageResponse;
 
     public MessageReactionTroll() {
         unicodeEmoji = "";

@@ -19,8 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageReference;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -47,9 +46,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class BotServiceImpl extends ListenerAdapter implements BotService {
-    public static final float PERCENTAGE_TROLL_REACTION = 0f;
-    public static final float PERCENTAGE_TROLL_MESSAGE = 1f;
-    public static final int COOLDOWN_TROLL_SECONDS = 5;
+    public static final float PERCENTAGE_TROLL_REACTION = 0.3f;
+    public static final float PERCENTAGE_TROLL_MESSAGE = 0.5f;
+    public static final int COOLDOWN_TROLL_SECONDS = 30;
 
     private final ScheduleRepository scheduleRepository;
     private final GuildRegistrationRepository guildRegistrationRepository;
@@ -143,15 +142,20 @@ public class BotServiceImpl extends ListenerAdapter implements BotService {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         Message message = event.getMessage();
-        if (message.getMentions().isMentioned(event.getJDA().getSelfUser()) ||
-            Objects.requireNonNull(Objects.requireNonNull(message.getMessageReference()).getMessage()).getAuthor().equals(event.getJDA().getSelfUser()))
-        {
+        SelfUser bot = event.getJDA().getSelfUser();
+
+        // If it's our bot that send a message, don't bother to check if we troll
+        // or not, the bot is not dumb
+        if (event.getAuthor().equals(bot)) return;
+
+        // Will clash any scum who dare to answer or mention the bot
+        // Note : not affected by the cooldown, the bot always replies
+        if (checkMessageClash(bot, message)) {
             messageClash(event);
             return;
         }
 
-        if (event.getAuthor().equals(event.getJDA().getSelfUser())) return;
-
+        // Check the cooldown of the trolling message bot
         if (scheduledCooldown.containsKey(event.getGuild().getIdLong())) {
             event.getChannel().sendMessage("En cooldown : %d".formatted(scheduledCooldown.get(event.getGuild().getIdLong()).getValue().getDelay(TimeUnit.SECONDS))).queue();
             return;
@@ -162,10 +166,26 @@ public class BotServiceImpl extends ListenerAdapter implements BotService {
     //endregion
 
     //region private method
+
+    /**
+     * Check if the bot need to clash the user if he mentions him or reply one of his message
+     * @param bot the reference of our bot
+     * @param message message of the user
+     * @return do the bot need to clash the user
+     */
+    private boolean checkMessageClash(SelfUser bot, Message message) {
+        boolean isMessageReference = message.getMessageReference() != null;
+        if (isMessageReference) {
+            boolean isMessageReferenceHasMessage = message.getMessageReference().getMessage() != null;
+            return isMessageReferenceHasMessage && message.getMentions().isMentioned(bot) ||
+                    message.getMessageReference().getMessage().getAuthor().equals(bot);
+        }
+        return false;
+    }
+
     private void messageClash(MessageReceivedEvent event) {
         Message message = event.getMessage();
-        message.reply(
-            Objects.requireNonNull(RandomTool.getRandomList(messageClashTrollRepository.findAll())).getMessageClash()
+        message.reply(RandomTool.getRandomList(messageClashTrollRepository.findAll()).getMessageClash()
         ).queue();
     }
 
@@ -175,12 +195,14 @@ public class BotServiceImpl extends ListenerAdapter implements BotService {
         Message message = event.getMessage();
         replies.add(triggerMessageTroll(message));
         replies.add(reactionTroll(message));
-        String result = replies.stream().filter(reply -> reply != null && !reply.isEmpty()).collect(Collectors.joining(" + "));
+        String result = replies.stream().filter(reply -> reply != null && !reply.isEmpty())
+                .collect(Collectors.joining(" + "));
 
         if (!result.isEmpty()) {
             message.reply(result).queue();
             ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-            scheduledCooldown.put(idGuild, Map.entry(scheduledExecutorService, scheduledExecutorService.schedule(() -> scheduledCooldown.remove(idGuild),
+            scheduledCooldown.put(idGuild, Map.entry(scheduledExecutorService,
+                    scheduledExecutorService.schedule(() -> scheduledCooldown.remove(idGuild),
                 Duration.between(LocalDateTime.now(), LocalDateTime.now().plusSeconds(COOLDOWN_TROLL_SECONDS)).getSeconds(),
                 TimeUnit.SECONDS
             )));
@@ -188,8 +210,9 @@ public class BotServiceImpl extends ListenerAdapter implements BotService {
     }
 
     private ReplyCallbackAction setEvent(String message, String date, String time, SlashCommandInteractionEvent event)
-        throws DateTimeBeforeException, NoTextChannelException {
+        throws DateTimeBeforeException, NoTextChannelException, NoServerFound {
         Guild guild = event.getGuild();
+        if (guild == null) throw new NoServerFound();
         GuildRegistration guildRegistration = getGuildRegistration(guild.getIdLong());
 
         LocalDateTime localDateTime = LocalDateTime.parse("%s %s".formatted(date, time),
@@ -262,33 +285,31 @@ public class BotServiceImpl extends ListenerAdapter implements BotService {
     private String reactionTroll(Message message) {
         if (!RandomTool.getRandomByPercentage(PERCENTAGE_TROLL_REACTION))
             return null;
+
         MessageReactionTroll trollReaction = RandomTool.getRandomList(messageReactionTrollRepository.findAll());
+
         if (trollReaction != null) {
             message.addReaction(Emoji.fromUnicode(trollReaction.getUnicodeEmoji())).queue();
-            if (trollReaction.getDescription() != null)
-                return trollReaction.getDescription();
+            if (trollReaction.getMessageResponse() != null)
+                return trollReaction.getMessageResponse();
         }
 
         return null;
     }
 
     private String triggerMessageTroll(Message message) {
-        String content = Normalizer.normalize(message.getContentDisplay().trim().toLowerCase(), Normalizer.Form.NFKD).replaceAll("[^\\p{L}\\d\\s_]", "");
-        List<MessageTriggerTroll> messagesTriggerTroll = messageTriggerTrollRepository.findAll().stream()
-            .filter(msgTriggerTroll ->
-                Arrays.stream(content.split(" "))
-                    .anyMatch(word ->
-                    word.equals(msgTriggerTroll.getMessageTrigger())
-                )
-            ).toList();
-        if (!messagesTriggerTroll.isEmpty()) {
-            return messagesTriggerTroll.stream()
-                .filter(messageTriggerTroll -> RandomTool.getRandomByPercentage(PERCENTAGE_TROLL_MESSAGE))
-                .map(messageTriggerTroll -> Objects.requireNonNull(
-                    RandomTool.getRandomList(messageTriggerTroll.getMessagesResponseTroll())
-                ).getMessageResponse()).collect(Collectors.joining(" + "));
-        }
+        // Filter all the noise the user can add to dodge the trolling message (special character / space)
+        String[] content = Normalizer.normalize(message.getContentDisplay().trim(), Normalizer.Form.NFKD)
+                .replaceAll("[^\\p{L}\\d\\s_]", "").split(" ");
 
+        // We check only the last word
+        String lastWord = content[content.length - 1];
+
+        // We retrieve the message from the database with the condition to have something similar
+        Optional<MessageTriggerTroll> messageTriggerTrollOptional = messageTriggerTrollRepository.findByMessageTrigger(lastWord);
+
+        if (messageTriggerTrollOptional.isPresent() && RandomTool.getRandomByPercentage(PERCENTAGE_TROLL_MESSAGE))
+            return "-%s".formatted(RandomTool.getRandomList(messageTriggerTrollOptional.get().getMessagesResponseTroll()).getMessageResponse());
         return null;
     }
     //endregion
