@@ -10,8 +10,8 @@ public class RandomTool {
         return RANDOM.nextFloat(0f, 1f) <= percentage;
     }
 
-    public static <T> T getRandomList(List<T> list) {
-        if (list.isEmpty()) return null;
+    public static <T> T getRandomList(List<T> list) throws
+            IllegalArgumentException {
         return list.get(RANDOM.nextInt(0, list.size()));
     }
 
