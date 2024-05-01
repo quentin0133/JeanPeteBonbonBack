@@ -101,7 +101,7 @@ public class BotServiceImpl extends ListenerAdapter implements BotService {
             switch (command) {
                 case ASSIGN -> {
                     GuildRegistration guildRegistration = getGuildRegistration(idGuild);
-                    guildRegistration.setIdTextChannel(getTextChannelByIdGuild(guild).getIdLong());
+                    guildRegistration.setIdTextChannel(event.getChannelIdLong());
                     guildRegistrationRepository.saveAndFlush(guildRegistration);
                     replyCallback = event.reply("Ce canal a été assigné pour les notifications");
                 }
