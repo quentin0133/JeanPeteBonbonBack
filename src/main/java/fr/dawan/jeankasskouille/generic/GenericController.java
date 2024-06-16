@@ -26,13 +26,13 @@ public abstract class GenericController<
 
     @PostMapping
     public D saveOrUpdate(@RequestBody D dto) {
-        return service.saveOrUpdate(dto);
+        return service.save(dto);
     }
 
-    /*@PutMapping("/{id}")
+    @PutMapping("/{id}")
     public D update(@PathVariable long id, @RequestBody D dto) {
-        return service.saveOrUpdate(dto);
-    }*/
+        return service.update(id, dto);
+    }
 
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable long id) {

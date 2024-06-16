@@ -1,6 +1,6 @@
 package fr.dawan.jeankasskouille;
 
-import fr.dawan.jeankasskouille.bot.BotService;
+import fr.dawan.jeankasskouille.business.component.bot.BotService;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -12,10 +12,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.beans.factory.annotation.Value;
 
 @SpringBootApplication
 public class JeanKasskouilleApplication {
 	public static JDA jda;
+
+	@Value("${TOKEN}")
+	private String TOKEN;
 
 	public static void main(String[] args) {
 		SpringApplication.run(JeanKasskouilleApplication.class, args);
@@ -26,7 +30,7 @@ public class JeanKasskouilleApplication {
 
 	@EventListener(ApplicationStartedEvent.class)
 	void StartDiscord() {
-		jda = JDABuilder.createDefault(token)
+		jda = JDABuilder.createDefault(TOKEN)
 			.setMemberCachePolicy(MemberCachePolicy.ALL)
 			.enableIntents(GatewayIntent.GUILD_MEMBERS,
 				GatewayIntent.GUILD_MESSAGE_REACTIONS,

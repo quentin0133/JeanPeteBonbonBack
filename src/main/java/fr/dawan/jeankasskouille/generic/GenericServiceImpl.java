@@ -1,5 +1,6 @@
 package fr.dawan.jeankasskouille.generic;
 
+import fr.dawan.jeankasskouille.exception.ResourceNotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,14 +28,15 @@ public abstract class GenericServiceImpl<
         return repository.findById(id).map(mapper::toDto);
     }
 
+    @Override
+    public D save(D dto) {
+        return mapper.toDto(repository.saveAndFlush(mapper.toEntity(dto)));
+    }
 
     @Override
-    public D saveOrUpdate(D dto) {
-        /*E entity = mapper.toEntity(dto);
-        entity = repository.save(entity);
-        dto = mapper.toDto(entity);
-        return dto;*/
-        return mapper.toDto(repository.save(mapper.toEntity(dto)));
+    public D update(long id, D dto) throws ResourceNotFound {
+        if (!repository.existsById(id)) throw new ResourceNotFound("User", id);
+        return mapper.toDto(repository.saveAndFlush(mapper.toEntity(dto)));
     }
 
     @Override
