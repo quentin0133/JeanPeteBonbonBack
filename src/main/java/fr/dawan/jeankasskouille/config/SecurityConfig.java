@@ -43,7 +43,7 @@ public class SecurityConfig {
     @Getter
     private static String SECRET_KEY;
 
-    @Value("${SECRET_KEY}")
+    @Value("${secret.key}")
     public void setSecretKey(String secretKey) {
         SECRET_KEY = secretKey;
     }

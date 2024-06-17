@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class JeanKasskouilleApplication {
 	public static JDA jda;
 
-	@Value("${TOKEN}")
+	@Value("${token}")
 	private String TOKEN;
 
 	public static void main(String[] args) {
