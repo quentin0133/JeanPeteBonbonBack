@@ -1,13 +1,13 @@
 package fr.dawan.jeankasskouille;
 
 import fr.dawan.jeankasskouille.business.component.bot.BotService;
+import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -16,21 +16,25 @@ import org.springframework.beans.factory.annotation.Value;
 
 @SpringBootApplication
 public class JeanKasskouilleApplication {
-	public static JDA jda;
-
 	@Value("${token}")
-	private String TOKEN;
+	private String token;
+
+	@Getter
+	private static JDA jda;
+
+	private final BotService botService;
+
+	public JeanKasskouilleApplication(BotService botService) {
+		this.botService = botService;
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(JeanKasskouilleApplication.class, args);
 	}
 
-	@Autowired
-	private BotService botService;
-
 	@EventListener(ApplicationStartedEvent.class)
-	void StartDiscord() {
-		jda = JDABuilder.createDefault(TOKEN)
+	void startDiscord() {
+		jda = JDABuilder.createDefault(token)
 			.setMemberCachePolicy(MemberCachePolicy.ALL)
 			.enableIntents(GatewayIntent.GUILD_MEMBERS,
 				GatewayIntent.GUILD_MESSAGE_REACTIONS,
