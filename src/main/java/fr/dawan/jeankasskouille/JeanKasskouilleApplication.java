@@ -1,6 +1,6 @@
 package fr.dawan.jeankasskouille;
 
-import fr.dawan.jeankasskouille.business.component.bot.BotService;
+import fr.dawan.jeankasskouille.bot.BotService;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
