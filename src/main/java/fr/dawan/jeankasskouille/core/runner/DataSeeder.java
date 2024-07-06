@@ -1,5 +1,6 @@
 package fr.dawan.jeankasskouille.core.runner;
 
+import fr.dawan.jeankasskouille.bot.guild.GuildRepository;
 import fr.dawan.jeankasskouille.message.clash.MessageClashTroll;
 import fr.dawan.jeankasskouille.message.clash.MessageClashTrollRepository;
 import fr.dawan.jeankasskouille.message.reaction.MessageReactionTroll;
@@ -8,6 +9,10 @@ import fr.dawan.jeankasskouille.message.response.MessageResponseTroll;
 import fr.dawan.jeankasskouille.message.response.MessageResponseTrollRepository;
 import fr.dawan.jeankasskouille.message.trigger.MessageTriggerTroll;
 import fr.dawan.jeankasskouille.message.trigger.MessageTriggerTrollRepository;
+import fr.dawan.jeankasskouille.schedule.Schedule;
+import fr.dawan.jeankasskouille.schedule.ScheduleRepository;
+import fr.dawan.jeankasskouille.schedule.ScheduleService;
+import fr.dawan.jeankasskouille.schedule.dtos.ScheduleDto;
 import fr.dawan.jeankasskouille.user.enums.Role;
 import fr.dawan.jeankasskouille.user.User;
 import fr.dawan.jeankasskouille.user.UserRepository;
@@ -16,6 +21,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +34,8 @@ public class DataSeeder implements CommandLineRunner {
     private final MessageResponseTrollRepository messageResponseTrollRepository;
     private final MessageReactionTrollRepository messageReactionTrollRepository;
     private final MessageClashTrollRepository messageClashTrollRepository;
+    private final ScheduleService scheduleService;
+    private final GuildRepository guildRepository;
 
     private final PasswordEncoder passwordEncoder;
 

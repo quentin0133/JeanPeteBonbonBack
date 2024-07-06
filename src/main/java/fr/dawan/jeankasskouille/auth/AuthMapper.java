@@ -9,7 +9,7 @@ import org.mapstruct.*;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING,
         uses = UserMapper.class)
 public interface AuthMapper {
-    @Mapping(target = "token", expression = "java(fr.dawan.jeankasskouille.tools.JwtUtils.generateToken(security))")
+    @Mapping(target = "token", expression = "java(fr.dawan.jeankasskouille.core.tools.JwtUtils.generateToken(security))")
     LoginResponseDto toLoginResponse(UserSecurity security);
 
     User fromRegister(RegisterDto register);
