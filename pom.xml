@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>fr.dawan</groupId>
-	<artifactId>jean-kasskouille</artifactId>
+	<artifactId>jean-petebonbon</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>jean-kasskouille</name>
+	<name>jean-petebonbon</name>
 	<description>Un bot pour une formation, rappel les évènements important en ping les personnes concernées et troll de temps en temps</description>
 
 	<properties>
