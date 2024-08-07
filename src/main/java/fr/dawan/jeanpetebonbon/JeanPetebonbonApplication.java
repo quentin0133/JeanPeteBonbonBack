@@ -44,7 +44,7 @@ public class JeanPetebonbonApplication {
 			)
 			.setChunkingFilter(ChunkingFilter.ALL)
 			.setBulkDeleteSplittingEnabled(false)
-			.setActivity(Activity.watching("les gens qu'il peut ennuyer"))
+			.setActivity(Activity.customStatus("Je te péterai les bonbons quand tu t'y attendra pas"))
 			.addEventListeners(botService)
 			.build();
 	}
