@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 
 public interface ScheduleService extends GenericService<ScheduleDto> {
-  void initSchedule(Guild guild, TextChannel textChannel);
+  void initSchedule(Guild guild);
 
   void clearSchedule(long idGuild);
 

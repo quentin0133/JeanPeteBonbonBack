@@ -73,11 +73,10 @@ public class BotServiceImpl extends ListenerAdapter implements BotService {
             ).toList()
     ).queue();
 
+    scheduleService.initSchedule(event.getGuild());
+
     try {
-      scheduleService.initSchedule(event.getGuild(), getTextChannelByIdGuild(event.getGuild()));
-    }
-    catch (NoServerFound e) {
-      guildRepository.saveAndFlush(new Guild(event.getGuild().getIdLong(), event.getGuild().getName()));
+      scheduleService.startSchedules(event.getGuild().getIdLong(), getTextChannelByIdGuild(event.getGuild()));
     }
     catch (NoTextChannelException ignored) {
     }

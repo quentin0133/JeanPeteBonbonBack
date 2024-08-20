@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static fr.dawan.jeanpetebonbon.core.tools.DateUtils.*;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -50,7 +51,7 @@ public class ScheduleServiceImpl extends GenericServiceImpl<Schedule, ScheduleRe
     @Override
     public void startSchedules(long idGuild, TextChannel textChannel) {
         Optional<Schedule> lastScheduleOptional = getLastSchedule(repository.findByGuildId(idGuild).stream().filter(this::refreshSchedule).map(schedule -> {
-            schedule.setTimes(getTimesBefore(schedule.getTimes(), LocalTime.now().plusSeconds(5)));
+            schedule.setTimes(getTimesBefore(schedule.getTimes(), LocalTime.now().plusSeconds(5)).collect(Collectors.toSet()));
             return schedule;
         }).toList());
         if (lastScheduleOptional.isEmpty()) return;
@@ -63,17 +64,16 @@ public class ScheduleServiceImpl extends GenericServiceImpl<Schedule, ScheduleRe
 
     private void sendMessage(long idGuild, TextChannel textChannel, LocalDateTime localDateTimeNext) {
         repository.findByGuildId(idGuild).stream().filter(otherShedule -> otherShedule.getLocalDateTime().stream().anyMatch(localDateTime -> Math.abs(SECONDS.between(localDateTime, localDateTimeNext)) < 1)).forEach(sameSchedule -> sendScheduleMessage(sameSchedule, textChannel));
-
         schedulesEventHandler.put(idGuild, null);
-
         getLastSchedule(repository.findByGuildId(idGuild)).ifPresent(nextSchedule -> startSchedules(idGuild, textChannel));
     }
 
     @Override
-    public void initSchedule(Guild guild, TextChannel textChannel) {
+    public void initSchedule(Guild guild) {
+        if (!guildRepository.existsById(guild.getIdLong()))
+            guildRepository.saveAndFlush(new fr.dawan.jeanpetebonbon.bot.guild.Guild(guild.getIdLong(), guild.getName()));
         scheduledEvent.put(guild.getIdLong(), Executors.newScheduledThreadPool(1));
         schedulesEventHandler.put(guild.getIdLong(), null);
-        startSchedules(guild.getIdLong(), textChannel);
     }
 
     @Override
