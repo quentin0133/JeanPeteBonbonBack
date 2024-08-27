@@ -1,5 +1,6 @@
 package fr.dawan.jeanpetebonbon.core.config;
 
+import fr.dawan.jeanpetebonbon.core.interceptor.ExceptionHandlerFilter;
 import fr.dawan.jeanpetebonbon.core.interceptor.JwtAuthFilter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -46,9 +47,11 @@ public class SecurityConfig {
     }
 
     @Getter
-    private static final int EXPIRATION_TIME_SECONDS = 3600;
+    private static final int EXPIRATION_TIME_SECONDS = 60 * 60 * 24;
 
     private final JwtAuthFilter jwtAuthFilter;
+
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
 
     private final UserDetailsService userDetailsService;
 
@@ -76,7 +79,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(exceptionHandlerFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtAuthFilter, ExceptionHandlerFilter.class)
                 .userDetailsService(userDetailsService)
                 .build();
     }
