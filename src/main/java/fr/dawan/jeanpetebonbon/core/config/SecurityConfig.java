@@ -47,7 +47,7 @@ public class SecurityConfig {
     }
 
     @Getter
-    private static final int EXPIRATION_TIME_SECONDS = 60 * 60 * 24;
+    private static final int EXPIRATION_TIME_SECONDS = 60;
 
     private final JwtAuthFilter jwtAuthFilter;
 
