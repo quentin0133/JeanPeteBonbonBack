@@ -9,6 +9,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class GuildServiceImpl extends GenericServiceImpl<Guild, GuildRepository, GuildDto, GuildMapper> implements GuildService {
     public GuildServiceImpl(GuildRepository repository, GuildMapper mapper) {
-        super(repository, mapper);
+        super(repository, mapper, Guild.class);
+    }
+
+    @Override
+    public boolean existsById(long id) {
+        return repository.existsById(id);
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("messages-reaction-troll")
-public class MessageReactionTrollController extends GenericController<MessageReactionTrollDto, MessageReactionTrollService> {
+public class MessageReactionTrollController extends GenericController<MessageReactionTroll, MessageReactionTrollDto, MessageReactionTrollService> {
     public MessageReactionTrollController(MessageReactionTrollService service) {
         super(service);
     }

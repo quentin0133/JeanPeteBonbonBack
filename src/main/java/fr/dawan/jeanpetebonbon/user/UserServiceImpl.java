@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class UserServiceImpl extends GenericServiceImpl<User, UserRepository, UserDto, UserMapper> implements UserService {
     public UserServiceImpl(UserRepository repository, UserMapper mapper) {
-        super(repository, mapper);
+        super(repository, mapper, User.class);
     }
 
     @Override

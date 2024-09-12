@@ -18,7 +18,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping(value = "/login", consumes = "application/json")
-    public ResponseEntity<LoginResponseDto> authenticate(@RequestBody LoginDto login) throws Exception {
+    public ResponseEntity<LoginResponseDto> authenticate(@RequestBody LoginDto login) {
         return ResponseEntity.ok(authService.authenticate(login));
     }
 

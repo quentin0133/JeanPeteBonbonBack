@@ -1,12 +1,13 @@
 package fr.dawan.jeanpetebonbon.bot.guild.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class GuildDto {
     private long id;

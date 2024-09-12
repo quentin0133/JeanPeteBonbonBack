@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class MessageClashTrollServiceImpl extends GenericServiceImpl<MessageClashTroll, MessageClashTrollRepository, MessageClashTrollDto, MessageClashTrollMapper> implements MessageClashTrollService {
     public MessageClashTrollServiceImpl(MessageClashTrollRepository repository, MessageClashTrollMapper mapper) {
-        super(repository, mapper);
+        super(repository, mapper, MessageClashTroll.class);
     }
 }

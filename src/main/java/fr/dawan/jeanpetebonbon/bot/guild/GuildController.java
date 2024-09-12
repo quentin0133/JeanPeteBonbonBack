@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/guilds")
-public class GuildController extends GenericController<GuildDto, GuildService> {
+public class GuildController extends GenericController<Guild, GuildDto, GuildService> {
     public GuildController(GuildService service) {
         super(service);
     }

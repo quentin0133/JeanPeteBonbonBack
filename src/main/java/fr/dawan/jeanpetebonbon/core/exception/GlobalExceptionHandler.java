@@ -4,6 +4,7 @@ import io.jsonwebtoken.JwtException;
 import jakarta.servlet.ServletException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -23,7 +24,7 @@ public class GlobalExceptionHandler {
         return getResponseEntity(ex, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({SecurityException.class, ServletException.class, JwtException.class})
+    @ExceptionHandler({JwtException.class, AuthenticationException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     protected ResponseEntity<Object> handleAuthenticationExceptions(RuntimeException ex) {
         return getResponseEntity(ex, HttpStatus.UNAUTHORIZED);
@@ -55,6 +56,7 @@ public class GlobalExceptionHandler {
         body.put("status", errorMessage);
 
         System.err.println(errorMessage);
+        Arrays.stream(ex.getStackTrace()).forEach(System.err::println);
 
         return new ResponseEntity<>(body, status);
     }

@@ -4,6 +4,6 @@ import fr.dawan.jeanpetebonbon.core.generic.GenericService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface FilterService<D, F> extends GenericService<D> {
+public interface FilterService<E, D, F> extends GenericService<E, D> {
     Page<D> findFiltered(F filter, Pageable pageable);
 }

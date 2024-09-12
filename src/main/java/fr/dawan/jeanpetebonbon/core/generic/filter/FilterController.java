@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-public abstract class FilterController<D, F, S extends FilterService<D, F>> extends GenericController<D, S> {
+public abstract class FilterController<E, D, F, S extends FilterService<E, D, F>> extends GenericController<E, D, S> {
     protected FilterController(S service) {
         super(service);
     }

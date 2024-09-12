@@ -19,8 +19,11 @@ public class JeanPetebonbonApplication {
 	@Value("${token}")
 	private String token;
 
-	@Getter
 	private static JDA jda;
+
+	public static JDA getJda() {
+		return jda;
+	}
 
 	private final BotService botService;
 

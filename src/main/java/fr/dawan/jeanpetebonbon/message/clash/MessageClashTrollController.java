@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("messages-clash-troll")
-public class MessageClashTrollController extends GenericController<MessageClashTrollDto, MessageClashTrollService> {
+public class MessageClashTrollController extends GenericController<MessageClashTroll, MessageClashTrollDto, MessageClashTrollService> {
     public MessageClashTrollController(MessageClashTrollService service) {
         super(service);
     }

@@ -2,6 +2,8 @@ package fr.dawan.jeanpetebonbon.core.config;
 
 import fr.dawan.jeanpetebonbon.core.interceptor.ExceptionHandlerFilter;
 import fr.dawan.jeanpetebonbon.core.interceptor.JwtAuthFilter;
+import java.time.Duration;
+import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -39,24 +42,20 @@ public class SecurityConfig {
     };
 
     @Getter
+    private static final int EXPIRATION_TIME_SECONDS = 60 * 60 * 10;
+
+    @Getter
     private static String SECRET_KEY;
+    private final JwtAuthFilter jwtAuthFilter;
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
+    private final UserDetailsService userDetailsService;
+    @Value("${front.app.url}")
+    private String frontUrl;
 
     @Value("${secret.key}")
     public void setSecretKey(String secretKey) {
-        SECRET_KEY = secretKey;
+      SECRET_KEY = secretKey;
     }
-
-    @Getter
-    private static final int EXPIRATION_TIME_SECONDS = 60;
-
-    private final JwtAuthFilter jwtAuthFilter;
-
-    private final ExceptionHandlerFilter exceptionHandlerFilter;
-
-    private final UserDetailsService userDetailsService;
-
-    @Value("${front.app.url}")
-    private String frontUrl;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -71,7 +70,17 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.cors(AbstractHttpConfigurer::disable)
+        return http.cors(cors -> cors
+                        .configurationSource(request -> {
+                            var corsConfiguration = new CorsConfiguration();
+                            corsConfiguration.setAllowedOrigins(List.of(frontUrl));
+                            corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                            corsConfiguration.setAllowedHeaders(List.of("*"));
+                            corsConfiguration.setAllowCredentials(true);
+                            corsConfiguration.setMaxAge(Duration.ofSeconds(EXPIRATION_TIME_SECONDS));
+                            return corsConfiguration;
+                        })
+                )
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()

@@ -5,8 +5,7 @@ import fr.dawan.jeanpetebonbon.core.generic.GenericService;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
-
-public interface ScheduleService extends GenericService<ScheduleDto> {
+public interface ScheduleService extends GenericService<Schedule, ScheduleDto> {
   void initSchedule(Guild guild);
 
   void clearSchedule(long idGuild);

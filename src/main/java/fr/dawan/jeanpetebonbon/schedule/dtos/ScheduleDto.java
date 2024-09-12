@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @SuperBuilder
@@ -19,6 +20,6 @@ import java.util.List;
 public class ScheduleDto extends BaseDto {
     private String message;
     private Long guildId;
-    private List<LocalDate> dates;
-    private List<LocalTime> times;
+    private Set<LocalDate> dates;
+    private Set<LocalTime> times;
 }

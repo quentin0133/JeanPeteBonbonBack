@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("schedules")
-public class ScheduleController extends GenericController<ScheduleDto, ScheduleService> {
+public class ScheduleController extends GenericController<Schedule, ScheduleDto, ScheduleService> {
     public ScheduleController(ScheduleService service) {
         super(service);
     }
