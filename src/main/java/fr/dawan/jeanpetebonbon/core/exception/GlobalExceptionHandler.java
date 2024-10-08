@@ -1,15 +1,12 @@
 package fr.dawan.jeanpetebonbon.core.exception;
 
 import io.jsonwebtoken.JwtException;
-import jakarta.servlet.ServletException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -50,12 +47,11 @@ public class GlobalExceptionHandler {
     }
 
     private ResponseEntity<Object> getResponseEntity(Exception ex, HttpStatus status) {
-        String errorMessage = "%s (error catched in GlobalExceptionHandler)".formatted(ex.getMessage());
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("errors", status.value());
-        body.put("status", errorMessage);
+        body.put("status", status.value());
+        body.put("message", ex.getMessage());
 
-        System.err.println(errorMessage);
+        System.err.println(ex.getMessage());
         Arrays.stream(ex.getStackTrace()).forEach(System.err::println);
 
         return new ResponseEntity<>(body, status);

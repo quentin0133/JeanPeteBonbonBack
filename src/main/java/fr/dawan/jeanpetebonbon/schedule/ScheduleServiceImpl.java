@@ -58,8 +58,7 @@ public class ScheduleServiceImpl
         getLastSchedule(
             repository.findByGuildId(idGuild).stream()
                 .filter(this::refreshSchedule)
-                .map(
-                    schedule -> {
+                .map(schedule -> {
                       schedule.setTimes(
                           getTimesBefore(schedule.getTimes(), LocalTime.now().plusSeconds(5))
                               .collect(Collectors.toSet()));

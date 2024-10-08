@@ -24,14 +24,13 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
       filterChain.doFilter(request, response);
     }
     catch (Exception ex) {
-      String errorMessage = "%s (error catched in ExceptionHandlerFilter)".formatted(ex.getMessage());
       Map<String, Object> res = new LinkedHashMap<>();
-      res.put("errors", HttpStatus.UNAUTHORIZED);
-      res.put("status", errorMessage);
+      res.put("status", HttpStatus.UNAUTHORIZED);
+      res.put("message", ex.getMessage());
 
       String jsonString = new ObjectMapper().writeValueAsString(res);
 
-      System.err.println(errorMessage);
+      System.err.println(ex.getMessage());
 
       response.setContentType("application/json");
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
