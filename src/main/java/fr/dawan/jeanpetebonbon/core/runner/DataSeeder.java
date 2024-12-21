@@ -9,20 +9,16 @@ import fr.dawan.jeanpetebonbon.message.response.MessageResponseTroll;
 import fr.dawan.jeanpetebonbon.message.response.MessageResponseTrollRepository;
 import fr.dawan.jeanpetebonbon.message.trigger.MessageTriggerTroll;
 import fr.dawan.jeanpetebonbon.message.trigger.MessageTriggerTrollRepository;
-import fr.dawan.jeanpetebonbon.schedule.Schedule;
-import fr.dawan.jeanpetebonbon.schedule.ScheduleRepository;
 import fr.dawan.jeanpetebonbon.schedule.ScheduleService;
-import fr.dawan.jeanpetebonbon.schedule.dtos.ScheduleDto;
 import fr.dawan.jeanpetebonbon.user.enums.Role;
 import fr.dawan.jeanpetebonbon.user.User;
 import fr.dawan.jeanpetebonbon.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
@@ -39,34 +35,28 @@ public class DataSeeder implements CommandLineRunner {
 
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${app.default.email}")
+    private String defaultUsername;
+
+    @Value("${app.default.password}")
+    private String defaultPassword;
+
+    @Value("${app.default.firstname}")
+    private String defaultFirstName;
+
+    @Value("${app.default.lastname}")
+    private String defaultLastName;
+
     @Override
     public void run(String... args) {
         if (userRepository.count() > 0) return;
 
         userRepository.saveAndFlush(User.builder()
-                .firstName("Quentin")
-                .lastName("YAHIA")
-                .email("quentin.yahia.pro@gmail.com")
-                .password(passwordEncoder.encode("qOgqPdbPjwPAC4cZuMf2"))
+                .firstName(defaultFirstName)
+                .lastName(defaultLastName)
+                .email(defaultUsername)
+                .password(passwordEncoder.encode(defaultPassword))
                 .roles(Set.of(Role.ADMIN))
-                .build()
-        );
-
-        userRepository.saveAndFlush(User.builder()
-                .firstName("Michel")
-                .lastName("Iencli")
-                .email("michel.iencli.pro@gmail.com")
-                .password(passwordEncoder.encode("1234"))
-                .roles(Set.of(Role.SERVER_OWNER))
-                .build()
-        );
-
-        userRepository.saveAndFlush(User.builder()
-                .firstName("Random")
-                .lastName("Konaipa")
-                .email("random.konaipa.pro@gmail.com")
-                .password(passwordEncoder.encode("1234"))
-                .roles(Set.of(Role.SERVER_OWNER))
                 .build()
         );
 
